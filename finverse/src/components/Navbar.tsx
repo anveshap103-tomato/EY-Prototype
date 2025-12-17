@@ -41,6 +41,7 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
     const navLinks = [
         { name: 'Solutions', href: '#solutions' },
         { name: 'Industries', href: '#industries' },
+        ...(isLoggedIn ? [{ name: 'Personal Finance', href: '/personal-finance' }] : []),
         { name: 'Partners', href: '#partners' },
         { name: 'Learn', href: '#learn' },
         { name: 'Company', href: '#company' },
@@ -75,6 +76,12 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
                                 key={link.name}
                                 href={link.href}
                                 onClick={(e) => {
+                                    if (link.href.startsWith('/')) {
+                                        // Internal route navigation
+                                        e.preventDefault();
+                                        navigate(link.href);
+                                        return;
+                                    }
                                     // Let default behavior happen if on home page for anchor links
                                     if (location.pathname !== '/') {
                                         e.preventDefault();
@@ -145,6 +152,13 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
                                     href={link.href}
                                     className="text-base font-medium text-slate-300 hover:text-white"
                                     onClick={(e) => {
+                                        if (link.href.startsWith('/')) {
+                                            e.preventDefault();
+                                            navigate(link.href);
+                                            setIsMobileMenuOpen(false);
+                                            return;
+                                        }
+
                                         if (location.pathname !== '/') {
                                             e.preventDefault();
                                             handleNavClick(link.href);
