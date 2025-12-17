@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { ReactNode, useState } from 'react';
-
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 interface CyberButtonProps {
   children: ReactNode;
   onClick?: () => void;
@@ -9,12 +9,12 @@ interface CyberButtonProps {
   className?: string;
 }
 
-export const CyberButton = ({ 
-  children, 
-  onClick, 
-  variant = 'primary', 
+export const CyberButton = ({
+  children,
+  onClick,
+  variant = 'primary',
   size = 'md',
-  className = '' 
+  className = ''
 }: CyberButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -58,7 +58,7 @@ export const CyberButton = ({
         className={`absolute inset-0 ${currentVariant.bg}`}
         animate={isHovered ? { opacity: 1 } : { opacity: 0.8 }}
       />
-      
+
       {/* Animated border */}
       <motion.div
         className="absolute inset-0 border-2 border-transparent"
@@ -71,7 +71,7 @@ export const CyberButton = ({
         }}
         transition={{ duration: 0.5, ease: 'linear' }}
       />
-      
+
       {/* Glitch lines */}
       {isHovered && (
         <>
@@ -89,26 +89,26 @@ export const CyberButton = ({
           />
         </>
       )}
-      
+
       {/* Glow effect */}
       <motion.div
         className={`absolute inset-0 ${currentVariant.bg} blur-xl opacity-0`}
         animate={isHovered ? { opacity: 0.6, scale: 1.2 } : { opacity: 0, scale: 1 }}
         transition={{ duration: 0.3 }}
       />
-      
+
       {/* Text */}
       <motion.span
         className={`relative z-10 ${currentVariant.text}`}
-        animate={isHovered ? { 
-          textShadow: '0 0 10px rgba(255,255,255,0.8)' 
-        } : { 
-          textShadow: '0 0 0px rgba(255,255,255,0)' 
+        animate={isHovered ? {
+          textShadow: '0 0 10px rgba(255,255,255,0.8)'
+        } : {
+          textShadow: '0 0 0px rgba(255,255,255,0)'
         }}
       >
         {children}
       </motion.span>
-      
+
       {/* Corner decorations */}
       <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-white/30" />
       <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-white/30" />

@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ReactNode, useRef } from 'react';
+import { useRef } from 'react';
+import type { ReactNode } from 'react';
 
 interface HolographicCardProps {
   children: ReactNode;
@@ -62,11 +63,14 @@ export const HolographicCard = ({ children, className = '', intensity = 1 }: Hol
             style={{
               background: useTransform(
                 [mouseXSpring, mouseYSpring],
-                ([x, y]) => `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, 
-                  rgba(100, 255, 218, 0.3) 0%, 
-                  rgba(255, 100, 255, 0.2) 30%, 
-                  rgba(100, 255, 218, 0.1) 60%, 
-                  transparent 100%)`
+                (latest: number[]) => {
+                  const [x, y] = latest;
+                  return `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, 
+                    rgba(100, 255, 218, 0.3) 0%, 
+                    rgba(255, 100, 255, 0.2) 30%, 
+                    rgba(100, 255, 218, 0.1) 60%, 
+                    transparent 100%)`;
+                }
               ),
             }}
           />

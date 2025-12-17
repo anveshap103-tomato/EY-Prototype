@@ -1,9 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { Plus, MessageCircle, Phone, Mail, Zap, X } from 'lucide-react';
+import { Chatbot } from './Chatbot';
 
 export const FloatingMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const menuItems = [
     { icon: MessageCircle, label: 'Chat', color: 'from-blue-500 to-cyan-500' },
@@ -44,6 +46,12 @@ export const FloatingMenu = () => {
                   boxShadow: '0 10px 30px rgba(100, 255, 218, 0.3)'
                 }}
                 whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  if (item.label === 'Chat') {
+                    setIsChatOpen(true);
+                    setIsOpen(false);
+                  }
+                }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r ${item.color} text-white font-medium shadow-lg backdrop-blur-sm border border-white/20 group`}
               >
                 <motion.div
@@ -106,6 +114,8 @@ export const FloatingMenu = () => {
           transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
         />
       </motion.button>
+
+      <Chatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 };

@@ -27,7 +27,7 @@ export const GlitchText = ({ text, className = '', glitchIntensity = 'medium' }:
       
       // Create glitched version
       const chars = text.split('');
-      const glitchPositions = [];
+      const glitchPositions: number[] = [];
       
       for (let i = 0; i < Math.min(settings.charCount, chars.length); i++) {
         const randomPos = Math.floor(Math.random() * chars.length);

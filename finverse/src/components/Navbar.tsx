@@ -6,12 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface NavbarProps {
-    isLoggedIn: boolean;
-    setIsLoggedIn: (value: boolean) => void;
-    username: string;
+    isLoggedIn?: boolean;
+    setIsLoggedIn?: (value: boolean) => void;
+    username?: string;
 }
 
-export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => {
+export const Navbar = ({ isLoggedIn = false, setIsLoggedIn = () => {}, username = '' }: NavbarProps = {}) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -40,11 +40,12 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
 
     const navLinks = [
         { name: 'Solutions', href: '#solutions' },
-        { name: 'Industries', href: '#industries' },
+        { name: 'Industries', href: '/industries' },
         ...(isLoggedIn ? [{ name: 'Personal Finance', href: '/personal-finance' }] : []),
+        ...(isLoggedIn ? [{ name: 'AI Coach', href: '/ai-coach' }] : []),
         { name: 'Partners', href: '#partners' },
-        { name: 'Learn', href: '#learn' },
-        { name: 'Company', href: '#company' },
+        { name: 'Learn', href: '/learn' },
+        { name: 'Company', href: '/company' },
     ];
 
     return (
@@ -107,7 +108,11 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
                                     {username}
                                 </button>
                                 <button
-                                    onClick={() => setIsLoggedIn(false)}
+                                    onClick={() => {
+                                        setIsLoggedIn(false);
+                                        localStorage.removeItem('isLoggedIn');
+                                        localStorage.removeItem('username');
+                                    }}
                                     className="text-sm font-medium text-slate-300 hover:text-white"
                                 >
                                     Log out
@@ -185,6 +190,8 @@ export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => 
                                     <button
                                         onClick={() => {
                                             setIsLoggedIn(false);
+                                            localStorage.removeItem('isLoggedIn');
+                                            localStorage.removeItem('username');
                                             setIsMobileMenuOpen(false);
                                         }}
                                         className="text-base font-medium text-slate-300 hover:text-white text-left"
