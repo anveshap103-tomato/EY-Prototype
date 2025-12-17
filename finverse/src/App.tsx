@@ -1,25 +1,21 @@
-
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { Features } from './components/Features';
-import { Testimonials } from './components/Testimonials';
-import { Footer } from './components/Footer';
-import { MatrixBackground } from './components/ui/MatrixBackground';
-import { FloatingMenu } from './components/ui/FloatingMenu';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { Login } from './pages/Login';
+import { AdminDashboard } from './pages/AdminDashboard';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+
   return (
-    <div className="min-h-screen bg-navy-900 text-slate-100 selection:bg-primary/30 relative overflow-hidden">
-      <MatrixBackground />
-      <div className="relative z-10">
-        <Navbar />
-        <Hero />
-        <Features />
-        <Testimonials />
-        <Footer />
-      </div>
-      <FloatingMenu />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} username={username} />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
   );
 }
 

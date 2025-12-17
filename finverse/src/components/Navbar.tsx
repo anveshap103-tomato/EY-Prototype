@@ -3,10 +3,19 @@ import { Button } from './ui/Button';
 import { Menu, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export const Navbar = () => {
+interface NavbarProps {
+    isLoggedIn: boolean;
+    setIsLoggedIn: (value: boolean) => void;
+    username: string;
+}
+
+export const Navbar = ({ isLoggedIn, setIsLoggedIn, username }: NavbarProps) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -15,6 +24,19 @@ export const Navbar = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Scroll to section handling if on home page, otherwise nav to home first
+    const handleNavClick = (href: string) => {
+        if (location.pathname !== '/') {
+            navigate('/');
+            // Small timeout to allow navigation to engage before scrolling
+            setTimeout(() => {
+                const element = document.querySelector(href);
+                element?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+        setIsMobileMenuOpen(false);
+    };
 
     const navLinks = [
         { name: 'Solutions', href: '#solutions' },
@@ -34,7 +56,10 @@ export const Navbar = () => {
             <div className="container mx-auto px-6 max-w-7xl">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
-                    <div className="flex items-center gap-2 cursor-pointer">
+                    <div
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => navigate('/')}
+                    >
                         <div className="w-8 h-8 rounded bg-gradient-to-tr from-primary to-emerald-400 flex items-center justify-center">
                             <div className="w-4 h-4 bg-navy-900 rounded-sm" />
                         </div>
@@ -49,6 +74,13 @@ export const Navbar = () => {
                             <a
                                 key={link.name}
                                 href={link.href}
+                                onClick={(e) => {
+                                    // Let default behavior happen if on home page for anchor links
+                                    if (location.pathname !== '/') {
+                                        e.preventDefault();
+                                        handleNavClick(link.href);
+                                    }
+                                }}
                                 className="text-sm font-medium text-slate-300 hover:text-white transition-colors relative group"
                             >
                                 {link.name}
@@ -59,10 +91,32 @@ export const Navbar = () => {
 
                     {/* Actions */}
                     <div className="hidden md:flex items-center gap-4">
-                        <a href="#login" className="text-sm font-medium text-slate-300 hover:text-white">
-                            Log in
-                        </a>
-                        <Button size="sm">Get a Demo</Button>
+                        {isLoggedIn ? (
+                            <>
+                                <button
+                                    onClick={() => navigate('/admin')}
+                                    className="text-sm font-medium text-primary hover:text-emerald-400 transition-colors"
+                                >
+                                    {username}
+                                </button>
+                                <button
+                                    onClick={() => setIsLoggedIn(false)}
+                                    className="text-sm font-medium text-slate-300 hover:text-white"
+                                >
+                                    Log out
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => navigate('/login')}
+                                    className="text-sm font-medium text-slate-300 hover:text-white"
+                                >
+                                    Log in
+                                </button>
+                                <Button size="sm">Get a Demo</Button>
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -90,16 +144,54 @@ export const Navbar = () => {
                                     key={link.name}
                                     href={link.href}
                                     className="text-base font-medium text-slate-300 hover:text-white"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onClick={(e) => {
+                                        if (location.pathname !== '/') {
+                                            e.preventDefault();
+                                            handleNavClick(link.href);
+                                        } else {
+                                            setIsMobileMenuOpen(false);
+                                        }
+                                    }}
                                 >
                                     {link.name}
                                 </a>
                             ))}
                             <div className="h-px bg-navy-700 my-2" />
-                            <a href="#login" className="text-base font-medium text-slate-300 hover:text-white">
-                                Log in
-                            </a>
-                            <Button className="w-full">Get a Demo</Button>
+                            {isLoggedIn ? (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/admin');
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="text-base font-medium text-primary hover:text-emerald-400 text-left"
+                                    >
+                                        {username}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsLoggedIn(false);
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="text-base font-medium text-slate-300 hover:text-white text-left"
+                                    >
+                                        Log out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/login');
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="text-base font-medium text-slate-300 hover:text-white text-left"
+                                    >
+                                        Log in
+                                    </button>
+                                    <Button className="w-full">Get a Demo</Button>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 )}
